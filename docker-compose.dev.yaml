@@ -1,0 +1,12 @@
+version: '3'
+services:
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: joshua
+      MONGO_INITDB_ROOT_PASSWORD: carlospunk
+    ports:
+      - 27017:27017
+    volumes:
+      - /home/joshua/data/db:/data/db
+
