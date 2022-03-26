@@ -1,10 +1,10 @@
-import { Exclude, Expose } from 'class-transformer';
+import { Expose } from 'class-transformer';
 import { IToken } from '../interfaces/token.interface';
 
 export class TokenSerializer implements IToken {
   @Expose()
-  access_token: string;
+  accessToken: string;
 
-  @Exclude()
-  reflesh_token: string;
+  @Expose()
+  refreshToken: string;
 }

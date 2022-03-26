@@ -6,17 +6,15 @@ import {
 import { UsersService } from 'src/models/users/users.service';
 import { AuthSignupDTO } from './dtos/auth-sigup.dto';
 import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
-import { IJwtPayload } from './interfaces/jwt-payload.interface';
 import { TokenSerializer } from './serializers/token.serializers';
 import { AuthLoginDTO } from './dtos/auth-login.dto';
-import { UserDocument } from 'src/models/users/users.schema';
+import { JwtCustomService } from './jwt-custom.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService
+    private jwtCustomService: JwtCustomService
   ) {}
 
   async signup(authSignupCredential: AuthSignupDTO): Promise<TokenSerializer> {
@@ -35,7 +33,7 @@ export class AuthService {
     const newUser = await this.usersService.create(newUserData);
     // Generar Token
     // Retornar token
-    return this.getToken(newUser);
+    return this.jwtCustomService.getTokens(newUser);
   }
 
   async login(authLoginCredential: AuthLoginDTO): Promise<TokenSerializer> {
@@ -52,15 +50,6 @@ export class AuthService {
       throw new UnauthorizedException('Incorrect password');
     }
 
-    return this.getToken(user);
-  }
-
-  private getToken(user: UserDocument): TokenSerializer {
-    const { email, name, _id: id } = user;
-
-    const data = { email, name };
-    const payload = { sub: id, data };
-    const token = this.jwtService.sign(payload);
-    return { access_token: token, reflesh_token: 'reflesh_token' };
+    return this.jwtCustomService.getTokens(user);
   }
 }
